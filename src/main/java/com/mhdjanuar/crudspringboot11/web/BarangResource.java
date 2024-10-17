@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mhdjanuar.crudspringboot11.domain.Barang;
 import com.mhdjanuar.crudspringboot11.dto.BarangCreateDTO;
+import com.mhdjanuar.crudspringboot11.dto.BarangUpdateDTO;
 import com.mhdjanuar.crudspringboot11.service.BarangService;
 
 @RestController
@@ -58,7 +59,14 @@ public class BarangResource {
         @RequestPart(value = "additionalInfo", required = false) String additionalInfo,
         @RequestPart(value = "file", required = false) MultipartFile file
     ) {
-        barangService.updateBarang(id, namaBarang, jumlahBarang, additionalInfo, file);
+        // Membuat DTO di sini
+        BarangUpdateDTO barangUpdateDTO = new BarangUpdateDTO();
+        barangUpdateDTO.setNamaBarang(namaBarang);
+        barangUpdateDTO.setJumlahBarang(jumlahBarang);
+        barangUpdateDTO.setAdditionalInfo(additionalInfo);
+
+        // Kirim ke service
+        barangService.updateBarang(id, barangUpdateDTO, file);
         return ResponseEntity.ok("Barang updated successfully");
     }
 

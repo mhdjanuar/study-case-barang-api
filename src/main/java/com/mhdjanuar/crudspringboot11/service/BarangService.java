@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mhdjanuar.crudspringboot11.domain.Barang;
 import com.mhdjanuar.crudspringboot11.dto.BarangCreateDTO;
+import com.mhdjanuar.crudspringboot11.dto.BarangUpdateDTO;
 
 public interface BarangService {
      public void createNewBarang(
@@ -17,7 +18,7 @@ public interface BarangService {
 
      Barang getBarangById(Long id); // New method to retrieve Barang by ID
 
-     void updateBarang(Long id, String namaBarang, String jumlahBarang, String additionalInfo, MultipartFile file); // New method
+     void updateBarang(Long id, BarangUpdateDTO barang, MultipartFile file); 
 
      void deleteBarang(Long id);
 }

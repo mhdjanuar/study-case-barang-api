@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mhdjanuar.crudspringboot11.domain.Barang;
 import com.mhdjanuar.crudspringboot11.dto.BarangCreateDTO;
+import com.mhdjanuar.crudspringboot11.dto.BarangUpdateDTO;
 import com.mhdjanuar.crudspringboot11.exception.InvalidFileTypeException;
 import com.mhdjanuar.crudspringboot11.exception.ResourceNotFoundException;
 import com.mhdjanuar.crudspringboot11.repository.BarangRepository;
@@ -114,7 +115,7 @@ public class BarangServiceImpl implements BarangService {
     }
 
     @Override
-    public void updateBarang(Long id, String namaBarang, String jumlahBarang, String additionalInfoJson, MultipartFile file) {
+    public void updateBarang(Long id, BarangUpdateDTO barangUpdateDTO, MultipartFile file) {
         try {
             logger.info("Attempting to update Barang with ID: {}", id); // Log saat mulai update
     
@@ -138,12 +139,19 @@ public class BarangServiceImpl implements BarangService {
             }
     
             // Konversi JSON string ke Map
-            Map<String, Object> additionalInfoMap = objectMapper.readValue(additionalInfoJson, Map.class);
+            Map<String, Object> additionalInfoMap = objectMapper.readValue(barangUpdateDTO.getAdditionalInfo(), Map.class);
             String additionalInfo = objectMapper.writeValueAsString(additionalInfoMap); // Konversi kembali ke String untuk disimpan di jsonb
             logger.info("Additional info for Barang ID {}: {}", id, additionalInfo); // Log informasi tambahan
     
             // Memanggil metode pembaruan native
-            barangRepository.updateBarangNative(id, namaBarang, Integer.parseInt(jumlahBarang), "", additionalInfo, gambarBarang, LocalDateTime.now());
+            barangRepository.updateBarangNative(id, 
+                barangUpdateDTO.getNamaBarang(), 
+                Integer.parseInt(barangUpdateDTO.getJumlahBarang()), 
+                "", 
+                additionalInfo, 
+                gambarBarang, 
+                LocalDateTime.now()
+            );
     
             // Mengambil barang yang telah diperbarui
             Barang updatedBarang = barangRepository.findById(id).get();
