@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mhdjanuar.crudspringboot11.domain.Barang;
+import com.mhdjanuar.crudspringboot11.dto.BarangCreateDTO;
 import com.mhdjanuar.crudspringboot11.exception.InvalidFileTypeException;
 import com.mhdjanuar.crudspringboot11.exception.ResourceNotFoundException;
 import com.mhdjanuar.crudspringboot11.repository.BarangRepository;
@@ -38,9 +39,7 @@ public class BarangServiceImpl implements BarangService {
 
     @Override
     public void createNewBarang(
-        String namaBarang, 
-        String jumlahBarang,
-        String additionalInfoJson, 
+        BarangCreateDTO barang,
         MultipartFile file
     ) throws InvalidFileTypeException {
         List<String> allowedMimeTypes = Arrays.asList("image/jpeg", "image/png");
@@ -53,7 +52,7 @@ public class BarangServiceImpl implements BarangService {
             }
 
             // Konversi JSON string ke Map
-            Map<String, Object> additionalInfoMap = objectMapper.readValue(additionalInfoJson, Map.class);
+            Map<String, Object> additionalInfoMap = objectMapper.readValue(barang.getAdditionalInfo(), Map.class);
             String additionalInfo = objectMapper.writeValueAsString(additionalInfoMap); // Konversi kembali ke String untuk disimpan di jsonb
 
             String nomorSeriBarang = UUID.randomUUID().toString();
@@ -61,12 +60,15 @@ public class BarangServiceImpl implements BarangService {
 
             // Log request sebelum disimpan
             logger.info("Saving Barang request: namaBarang={}, jumlahBarang={}, additionalInfo={}, fileName={}", 
-            namaBarang, jumlahBarang, additionalInfo, file.getOriginalFilename());
+                barang.getNamaBarang(), 
+                barang.getJumlahBarang(), 
+                additionalInfo, 
+                file.getOriginalFilename());
 
             // Menyimpan entitas Barang dengan Native Query
             barangRepository.saveNative(
-                namaBarang,
-                Integer.parseInt(jumlahBarang), 
+                barang.getNamaBarang(),
+                Integer.parseInt(barang.getJumlahBarang()), 
                 nomorSeriBarang, 
                 additionalInfo,
                 filePath.toString(),
@@ -74,7 +76,7 @@ public class BarangServiceImpl implements BarangService {
                 LocalDateTime.now()
             );
 
-            logger.info("Barang created successfully with name: test {}", namaBarang);
+            logger.info("Barang created successfully with name: test {}", barang.getNamaBarang());
         } catch (JsonMappingException e) {
             throw new RuntimeException("Invalid JSON format: " + e.getMessage(), e);
         } catch (JsonProcessingException e) {

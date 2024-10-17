@@ -5,12 +5,11 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mhdjanuar.crudspringboot11.domain.Barang;
+import com.mhdjanuar.crudspringboot11.dto.BarangCreateDTO;
 
 public interface BarangService {
      public void createNewBarang(
-          String namaBarang, 
-          String jumlahBarang,
-          String additionalInfo, 
+          BarangCreateDTO barang,
           MultipartFile file
      );
 

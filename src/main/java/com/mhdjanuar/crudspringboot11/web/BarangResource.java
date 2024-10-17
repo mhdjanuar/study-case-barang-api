@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mhdjanuar.crudspringboot11.domain.Barang;
+import com.mhdjanuar.crudspringboot11.dto.BarangCreateDTO;
 import com.mhdjanuar.crudspringboot11.service.BarangService;
 
 @RestController
@@ -25,7 +26,14 @@ public class BarangResource {
         @RequestPart("additionalInfo") String additionalInfo,
         @RequestPart("file") MultipartFile file
     ) {
-        barangService.createNewBarang(namaBarang, jumlahBarang, additionalInfo, file);
+        // Buat DTO di dalam controller, dan pass ke service
+        BarangCreateDTO barangCreateDTO = new BarangCreateDTO();
+        barangCreateDTO.setNamaBarang(namaBarang);
+        barangCreateDTO.setJumlahBarang(jumlahBarang);
+        barangCreateDTO.setAdditionalInfo(additionalInfo);
+
+        // Panggil service dengan DTO dan file
+        barangService.createNewBarang(barangCreateDTO, file);
 
         return ResponseEntity.ok("Barang created successfully");
     }
