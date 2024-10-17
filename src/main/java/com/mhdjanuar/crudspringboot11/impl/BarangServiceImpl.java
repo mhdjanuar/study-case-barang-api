@@ -95,6 +95,8 @@ public class BarangServiceImpl implements BarangService {
     public List<BarangResponseDTO> getAllBarang() {
         List<Barang> barangs = barangRepository.findAll();
 
+        logger.info("Barang list retrieved: {}", barangs);
+        
         // Konversi dari Barang ke BarangResponseDTO
         return barangs.stream().map((b) -> {
             BarangResponseDTO dto = new BarangResponseDTO();
