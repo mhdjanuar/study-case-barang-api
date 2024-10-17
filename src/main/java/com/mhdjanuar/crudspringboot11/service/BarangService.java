@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mhdjanuar.crudspringboot11.domain.Barang;
 import com.mhdjanuar.crudspringboot11.dto.BarangCreateDTO;
+import com.mhdjanuar.crudspringboot11.dto.BarangResponseDTO;
 import com.mhdjanuar.crudspringboot11.dto.BarangUpdateDTO;
 
 public interface BarangService {
@@ -14,7 +15,7 @@ public interface BarangService {
           MultipartFile file
      );
 
-     List<Barang> getAllBarang(); // New method to retrieve all Barang
+     List<BarangResponseDTO> getAllBarang(); // New method to retrieve all Barang
 
      Barang getBarangById(Long id); // New method to retrieve Barang by ID
 

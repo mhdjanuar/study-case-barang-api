@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mhdjanuar.crudspringboot11.domain.Barang;
 import com.mhdjanuar.crudspringboot11.dto.BarangCreateDTO;
+import com.mhdjanuar.crudspringboot11.dto.BarangResponseDTO;
 import com.mhdjanuar.crudspringboot11.dto.BarangUpdateDTO;
 import com.mhdjanuar.crudspringboot11.service.BarangService;
 
@@ -40,9 +41,9 @@ public class BarangResource {
     }
 
     @GetMapping(value = "/barang")
-    public ResponseEntity<List<Barang>> getAllBarang() {
-        List<Barang> barangList = barangService.getAllBarang();
-        return ResponseEntity.ok(barangList);
+    public ResponseEntity<List<BarangResponseDTO>> getAllBarang() {
+        List<BarangResponseDTO> barangResponseDTOList = barangService.getAllBarang();
+        return ResponseEntity.ok(barangResponseDTOList);
     }
 
     @GetMapping(value = "/barang/{id}")

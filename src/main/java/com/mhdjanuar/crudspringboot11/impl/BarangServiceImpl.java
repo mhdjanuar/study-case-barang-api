@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mhdjanuar.crudspringboot11.domain.Barang;
 import com.mhdjanuar.crudspringboot11.dto.BarangCreateDTO;
+import com.mhdjanuar.crudspringboot11.dto.BarangResponseDTO;
 import com.mhdjanuar.crudspringboot11.dto.BarangUpdateDTO;
 import com.mhdjanuar.crudspringboot11.exception.InvalidFileTypeException;
 import com.mhdjanuar.crudspringboot11.exception.ResourceNotFoundException;
@@ -91,14 +92,26 @@ public class BarangServiceImpl implements BarangService {
     }
 
     @Override
-    public List<Barang> getAllBarang() {
+    public List<BarangResponseDTO> getAllBarang() {
         List<Barang> barangs = barangRepository.findAll();
-    
-        // Simpan log sebelum return
-        logger.info("Barang list retrieved: {}", barangs);
-    
-        return barangs;
+
+        // Konversi dari Barang ke BarangResponseDTO
+        return barangs.stream().map((b) -> {
+            BarangResponseDTO dto = new BarangResponseDTO();
+            dto.setId(b.getId());
+            dto.setJumlahStokBarang(b.getJumlahStokBarang());
+            dto.setNomorSeriBarang(b.getNomorSeriBarang());
+            dto.setGambarBarang(b.getGambarBarang());
+            dto.setNamaBarang(b.getNamaBarang());
+            dto.setAdditionalInfo(b.getAdditionalInfo());
+            dto.setCreatedAt(b.getCreatedAt());
+            dto.setCreatedBy(b.getCreatedBy());
+            dto.setUpdatedAt(b.getUpdatedAt());
+            dto.setUpdatedBy(b.getUpdatedBy());
+            return dto;
+        }).collect(Collectors.toList());
     }
+
     @Override
     public Barang getBarangById(Long id) {
         logger.info("Fetching Barang with ID: {}", id); // Log saat mulai pencarian
@@ -147,7 +160,7 @@ public class BarangServiceImpl implements BarangService {
             barangRepository.updateBarangNative(id, 
                 barangUpdateDTO.getNamaBarang(), 
                 Integer.parseInt(barangUpdateDTO.getJumlahBarang()), 
-                "", 
+                existingBarang.getNomorSeriBarang(), 
                 additionalInfo, 
                 gambarBarang, 
                 LocalDateTime.now()
